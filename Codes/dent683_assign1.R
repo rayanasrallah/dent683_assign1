@@ -101,7 +101,34 @@ view(oh_mrg_nodup)
 table(duplicated(oh_mrg_nodup$SEQN))
 #results: no duplicates in oh_mrg_nodup
 
+
 #commit+push
 
+
 ####################
+
+#task 6.3: adding new variable (year) to the demo data-sets
+#saving the new data frame to new objects
+
+library(dplyr)
+demo2012yr <- demo2012 %>% mutate(year=2012, .before = "SEQN")
+demo2014yr <- demo2014 %>% mutate(year=2014, .before = "SEQN")
+demo2016yr <- demo2016 %>% mutate(year=2016, .before = "SEQN")
+demo2018yr <- demo2018 %>% mutate(year=2018, .before = "SEQN")
+
+#viewing the new data-sets
+view(demo2012yr)
+view(demo2014yr)
+view(demo2016yr)
+view(demo2018yr)
+
+
+#commit+push
+
+
+####################
+
+
+
+
 
