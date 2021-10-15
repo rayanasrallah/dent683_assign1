@@ -157,7 +157,16 @@ table(duplicated(demo_mrg$SEQN))
 
 ####################
 
+#task 6.5: merging the data sets created in tasks 6.2 and 6.4, ignoring participants who are not present in both data-sets
+#i.e. merging oh_mrg_nodup and demo_mrg by SEQN, a horizontal merging (including participants present on both data-sets)
+
+final_mrg <- merge(demo_mrg, oh_mrg_nodup, by="SEQN", all=FALSE)
+view(final_mrg)
 
 
+#commit+push
+
+
+####################
 
 
