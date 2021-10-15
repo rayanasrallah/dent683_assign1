@@ -37,3 +37,9 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# asking github to ignore xlxs files
+*.xlsx
+
+# asking github to ignore csv files
+*.csv
