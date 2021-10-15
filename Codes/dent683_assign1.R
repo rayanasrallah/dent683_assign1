@@ -34,9 +34,9 @@ demo2018 <- read_xlsx(path = here("Data","nhanes_demo_12_18.xlsx"),
 
 ####################
 
-#task 6.2:creating single data set that includes SEQ and variables ending with CTC from the ohx data-sets
+#task 6.2:creating a single data set that includes SEQ and variables ending with CTC from the ohx data-sets
 
-#before creating single data set, checking that the variables' names are identical between the 4 oh data-set
+#before creating a single data set, checking that the variables' names are identical between the 4 oh data-set
 identical(names(oh2012), names(oh2014))
 identical(names(oh2012), names(oh2016))
 identical(names(oh2012), names(oh2018))
@@ -46,12 +46,12 @@ identical(names(oh2012), names(oh2018))
 oh2012vsoh2016 <- setdiff(names(oh2012), names(oh2016))
 oh2012vsoh2018 <- setdiff(names(oh2012), names(oh2018))
 identical(oh2012vsoh2016,oh2012vsoh2018)
-#results: identical (true)
+#results: identical (TRUE)
 
 #so the differences between oh2012 (and oh2014 because they are identical) and oh2016 and oh2018 are the same
 #now I will check if the names of oh2016 and oh 2018 are identical
 identical (names(oh2016), names(oh2018))
-#results: identical (true)
+#results: identical (TRUE)
 
 #So, in sum: the variables of oh2012 are the same in oh2014
 #            the variables of oh2016 are the same in oh2018
@@ -59,9 +59,9 @@ identical (names(oh2016), names(oh2018))
 
 #now I want to know how many variables are the same?
 intersect(names(oh2012), names(oh2016)) %>% length()
-#So, the 110 variables in oh2012 (and oh2014 obviously) are included in oh2016 (and oh2018 obviously)
+#So, all the 110 variables in oh2012 (and oh2014 obviously) are included in oh2016 (and oh2018 obviously)
 
-#now I want to know if the variables of interest are coded the same way in all the sets
+#now I want to know if the variables of interest are coded the same way in all the sets before merging
 oh2012 %>% select(ends_with("CTC")) 
 oh2014 %>% select(ends_with("CTC"))
 oh2016 %>% select(ends_with("CTC"))
@@ -99,7 +99,7 @@ view(oh_mrg_nodup)
 
 #checking for duplicates in SEQN in the final data-set "oh_mrg_nodup"
 table(duplicated(oh_mrg_nodup$SEQN))
-#results: no duplicates in oh_mrg_nodup
+#results: no duplicates in oh_mrg_nodup (FALSE)
 
 
 #commit+push
@@ -107,7 +107,7 @@ table(duplicated(oh_mrg_nodup$SEQN))
 
 ####################
 
-#task 6.3: adding new variable (year) to the demo data-sets
+#task 6.3: adding a new variable (year) to the demo data-sets
 #saving the new data frame to new objects
 
 library(dplyr)
@@ -121,6 +121,35 @@ view(demo2012yr)
 view(demo2014yr)
 view(demo2016yr)
 view(demo2018yr)
+
+
+#commit+push
+
+
+####################
+
+#task 6.4: creating a new data-set, based on the 4 demo data-sets, that includes the variables SEQN, year, RIDAGEYR
+
+#before creating a new merged data-set, I want to know if the variable of interest (RIDAGEYR) is coded the same way in all the sets
+demo2012yr %>% select(ends_with("AGEYR"))
+demo2014yr %>% select(ends_with("AGEYR"))
+demo2016yr %>% select(ends_with("AGEYR"))
+demo2018yr %>% select(ends_with("AGEYR"))
+#in a randomly check, they seem to be coded the same, 
+
+#now I will create new 4 data-sets with the variables of interest
+demo2012_int <- demo2012yr %>%select("year","SEQN", ends_with("AGEYR"))
+demo2014_int <- demo2014yr %>%select("year","SEQN", ends_with("AGEYR"))
+demo2016_int <- demo2016yr %>%select("year","SEQN", ends_with("AGEYR"))
+demo2018_int <- demo2018yr %>%select("year","SEQN", ends_with("AGEYR"))
+
+#now I will create a new data-set from the above ones
+demo_mrg <- bind_rows(demo2012_int, demo2014_int, demo2016_int, demo2018_int)
+view(demo_mrg)
+
+#finally, checking for duplicates in the id variable (SEQ)
+table(duplicated(demo_mrg$SEQN))
+#results: no duplicates (FALSE)
 
 
 #commit+push
