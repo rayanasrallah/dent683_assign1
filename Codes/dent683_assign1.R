@@ -36,8 +36,7 @@ demo2018 <- read_xlsx(path = here("Data","nhanes_demo_12_18.xlsx"),
 
 #task 6.2:creating a single data set that includes SEQ and variables ending with CTC from the ohx data-sets
 
-#before creating a single data set, 
-#now I want to know how many variables are the same in the 4 data-sets?
+#before creating a single data set, I want to know how many variables are the same in the 4 data-sets?
 intersect(names(oh2012), names(oh2014)) %>% length()
 intersect(names(oh2016), names(oh2018)) %>% length()
 intersect(names(oh2012), names(oh2016)) %>% length()
@@ -54,17 +53,18 @@ oh2018 %>% select(ends_with("CTC"))
 #in a randomly check, they seem to be coded the same
 
 #now I will select the variables of interest only for those who completed oral examinations
+#when the variable OHDEXSTS=1, the participant have complete oral examination (source:https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/OHXDEN_I.htm)
 #this will be saved in new objects
-oh2012_int <- oh2012 %>%filter(OHDDESTS==1,OHDEXSTS==1)%>%
+oh2012_int <- oh2012 %>%filter(OHDEXSTS==1)%>%
   select("SEQN", ends_with("CTC"))
 
-oh2014_int <- oh2014 %>%filter(OHDDESTS==1,OHDEXSTS==1)%>%
+oh2014_int <- oh2014 %>%filter(OHDEXSTS==1)%>%
   select("SEQN", ends_with("CTC"))
 
-oh2016_int <- oh2016 %>%filter(OHDDESTS==1,OHDEXSTS==1)%>%
+oh2016_int <- oh2016 %>%filter(OHDEXSTS==1)%>%
   select("SEQN", ends_with("CTC"))
 
-oh2018_int <- oh2018 %>%filter(OHDDESTS==1,OHDEXSTS==1)%>%
+oh2018_int <- oh2018 %>%filter(OHDEXSTS==1)%>%
   select("SEQN", ends_with("CTC"))
 
 #now I will create a new data-set from the above ones
@@ -85,12 +85,12 @@ table(duplicated(oh_mrg$SEQN))
 #saving the new data frame to new objects
 
 library(dplyr)
-demo2012yr <- demo2012 %>% mutate(year=2012, .before = "SEQN")
-demo2014yr <- demo2014 %>% mutate(year=2014, .before = "SEQN")
-demo2016yr <- demo2016 %>% mutate(year=2016, .before = "SEQN")
-demo2018yr <- demo2018 %>% mutate(year=2018, .before = "SEQN")
+demo2012yr <- demo2012 %>% mutate(year=2012, .after = "SEQN")
+demo2014yr <- demo2014 %>% mutate(year=2014, .after = "SEQN")
+demo2016yr <- demo2016 %>% mutate(year=2016, .after = "SEQN")
+demo2018yr <- demo2018 %>% mutate(year=2018, .after = "SEQN")
 
-#viewing the new data-sets
+#viewing the new data-sets to make sure of the added variable
 view(demo2012yr)
 view(demo2014yr)
 view(demo2016yr)
@@ -109,13 +109,13 @@ demo2012yr %>% select(ends_with("AGEYR"))
 demo2014yr %>% select(ends_with("AGEYR"))
 demo2016yr %>% select(ends_with("AGEYR"))
 demo2018yr %>% select(ends_with("AGEYR"))
-#in a randomly check, they seem to be coded the same, 
+#they seem to be coded the same
 
 #now I will create new 4 data-sets with the variables of interest
-demo2012_int <- demo2012yr %>%select("year","SEQN", ends_with("AGEYR"))
-demo2014_int <- demo2014yr %>%select("year","SEQN", ends_with("AGEYR"))
-demo2016_int <- demo2016yr %>%select("year","SEQN", ends_with("AGEYR"))
-demo2018_int <- demo2018yr %>%select("year","SEQN", ends_with("AGEYR"))
+demo2012_int <- demo2012yr %>%select("SEQN","year", ends_with("AGEYR"))
+demo2014_int <- demo2014yr %>%select("SEQN","year", ends_with("AGEYR"))
+demo2016_int <- demo2016yr %>%select("SEQN","year", ends_with("AGEYR"))
+demo2018_int <- demo2018yr %>%select("SEQN","year", ends_with("AGEYR"))
 
 #now I will create a new data-set from the above ones
 demo_mrg <- bind_rows(demo2012_int, demo2014_int, demo2016_int, demo2018_int)
@@ -123,7 +123,7 @@ view(demo_mrg)
 
 #finally, checking for duplicates in the id variable (SEQ)
 table(duplicated(demo_mrg$SEQN))
-#results: no duplicates (FALSE)
+#results: No duplicates (FALSE)
 
 
 #commit+push
@@ -159,8 +159,6 @@ write.csv(final_mrg,here("Data","final_mrg.csv"), row.names =FALSE)
 # 2.The SHA1 of the final commit  
 # 3.The number of participants in your final data set, by year of survey  
 final_mrg %>% group_by(year) %>% tally ()
-
-view(oh2018_int)
 
 
 #commit+push
